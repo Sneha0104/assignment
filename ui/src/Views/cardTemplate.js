@@ -10,7 +10,7 @@ import moment from "moment";
 export default function BasicCard(props) {
 
   return (
-    <Card sx={{ minWidth: 275 }} style={{backgroundColor: "#edf5e1"}}>
+    <Card sx={{ minWidth: 275 }} style={{backgroundColor: "#edf5e1", padding:"10px"}}>
       <CardContent  >
         <Typography variant="h5" component="div">
           {props.firstName} {props.lastName}
