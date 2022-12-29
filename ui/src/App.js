@@ -9,10 +9,11 @@ function App() {
   const [droneData, setDroneData] = React.useState([]);
   const [violatorData, setViolaterData] = React.useState([]);
 
+  //changed http://localhost:3001  to https://boiling-crack-production.up.railway.app/
   //get drones data every 2 minutes
   React.useEffect(() => {
     const interval = setInterval(() => {
-      axios.get('http://localhost:3001/drones')
+      axios.get('https://boiling-crack-production.up.railway.app/drones')
         .then(response => {
           const resData = response.data.drone;
           setDroneData([...resData]);
@@ -57,7 +58,7 @@ function App() {
 
   const pilotInformation = (serialNumber, distance) => {
     //console.log(serialNumber,distance);
-    axios.get(`http://localhost:3001/pilots/${serialNumber}`)
+    axios.get(`https://boiling-crack-production.up.railway.app/pilots/${serialNumber}`)
       .then(response => {
         const pilotData = response.data;
         //console.log("got a pilot",pilotData.firstName);
