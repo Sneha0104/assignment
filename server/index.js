@@ -1,7 +1,7 @@
 const express = require("express");
 
-const PORT = process.env.PORT || 3001;
-
+const PORT = 3001;
+//process.env.PORT || 
 const app = express();
 const axios = require('axios');
 var parser = require('xml2json');
@@ -71,5 +71,5 @@ app.get('/pilots/:serialNumber', (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log(`Server listening on ${PORT}`);
+    //console.log(`Server listening on ${PORT}`);
   });
