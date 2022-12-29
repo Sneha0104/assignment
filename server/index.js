@@ -1,7 +1,7 @@
 const express = require("express");
 
-const PORT = 3001;
-//process.env.PORT || 
+const PORT = process.env.PORT || 3001;
+
 const app = express();
 const axios = require('axios');
 var parser = require('xml2json');
