@@ -1,5 +1,4 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import axios from 'axios';
 import BasicCard from "./Views/cardTemplate";
@@ -72,13 +71,13 @@ function App() {
           violationTimes:1,
           serialNumber: serialNumber,
         };
-        if(violatorData.find((id)=>id.serialNumber === serialNumber)!=undefined)
+        if(violatorData.find((id)=>id.serialNumber === serialNumber)!==undefined)
         {
           console.log("found");
           const prevData = violatorData.find((id)=>id.serialNumber === serialNumber);
-          if(prevData!=undefined)
+          if(prevData!==undefined)
           violator.violationTimes = prevData.violationTimes + 1;
-          if(prevData!=undefined && violator.closestDistance>prevData.closestDistance)
+          if(prevData!==undefined && violator.closestDistance>prevData.closestDistance)
           {
           //new time, old distance
           violator.closestDistance = prevData.closestDistance;
@@ -86,7 +85,7 @@ function App() {
           //if not => new time, new distance
             setViolaterData(violatorData.map((v)=>{
 
-              if(v.serialNumber == violator.serialNumber)
+              if(v.serialNumber === violator.serialNumber)
               {
                 return violator;
               }
@@ -117,15 +116,18 @@ function App() {
   return (
     <div className="App">
       <header className="Header">
-        <h1>Violators Information (Will take a few minutes)</h1>
+        <h1>Violators Information</h1>
+        
         </header>
+        
         <div className="Body">
+        <h6> (Will take a few minutes)</h6>
         <Box  sx={{ flexGrow: 1 }}>
-          <Grid container spacing={5}>
+          <Grid container spacing={25}>
             {
 
               violatorData.map((data, idx) => (
-                <Grid item xs = {3}>
+                <Grid item xs = {4}>
                   <BasicCard
                     key={idx}
                     firstName={data.firstName}
