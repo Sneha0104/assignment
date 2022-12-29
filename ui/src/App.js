@@ -69,9 +69,39 @@ function App() {
           closestDistance: distance,
           violationTime: Date.now(),
           violationTimes:1,
+          serialNumber: serialNumber,
         };
+        if(violatorData.find((id)=>id.serialNumber === serialNumber)!=undefined)
+        {
+          console.log("found");
+          const prevData = violatorData.find((id)=>id.serialNumber === serialNumber);
+          if(prevData!=undefined)
+          violator.violationTimes = prevData.violationTimes + 1;
+          if(prevData!=undefined && violator.closestDistance>prevData.closestDistance)
+          {
+          //new time, old distance
+          violator.closestDistance = prevData.closestDistance;
+          }
+          //if not => new time, new distance
+            setViolaterData(violatorData.map((v)=>{
 
-        setViolaterData(violatorData.concat([violator]));
+              if(v.serialNumber == violator.serialNumber)
+              {
+                return violator;
+              }
+              else
+              {
+                console.log("return");
+                return v;
+              }
+            }));
+          
+         
+        }
+        else
+       {          console.log("not-found");
+ 
+        setViolaterData(violatorData.concat([violator]));}
         //console.log("violer2=",violatorData);
 
       })
@@ -79,20 +109,22 @@ function App() {
         //console.log(error);
         return error;
       });
-    console.log("data = ", violatorData);
+    //console.log("data = ", violatorData);
 
   }
 
   return (
     <div className="App">
-      <header className="Body">
+      <header className="Header">
         <h1>Violators Information</h1>
-        <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={2}>
+        </header>
+        <div className="Body">
+        <Box  sx={{ flexGrow: 1 }}>
+          <Grid container spacing={5}>
             {
 
               violatorData.map((data, idx) => (
-                <Grid item xs={4}>
+                <Grid item xs = {3}>
                   <BasicCard
                     key={idx}
                     firstName={data.firstName}
@@ -108,7 +140,7 @@ function App() {
             }
           </Grid>
         </Box>
-      </header>
+      </div>
     </div>
   );
 }

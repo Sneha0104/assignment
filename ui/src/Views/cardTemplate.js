@@ -5,21 +5,13 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import moment from "moment";
 
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-  >
-    •
-  </Box>
-);
 
 
 export default function BasicCard(props) {
 
   return (
-    <Card sx={{ minWidth: 275 }}>
-      <CardContent>
+    <Card sx={{ minWidth: 275 }} style={{backgroundColor: "#edf5e1"}}>
+      <CardContent  >
         <Typography variant="h5" component="div">
           {props.firstName} {props.lastName}
         </Typography>
@@ -39,7 +31,7 @@ export default function BasicCard(props) {
           Violation Time: {moment(props.violationTime).format("LTS")}
         </Typography>
         <Typography variant="body2">
-          Violation Times: {props.violationTimes.toString()}
+          No of Violations: {props.violationTimes.toString()}
         </Typography>
       </CardContent>
 
