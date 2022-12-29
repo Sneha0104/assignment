@@ -1,21 +1,113 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-
+import axios from 'axios';
+import BasicCard from "./Views/cardTemplate";
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 function App() {
-  const [data, setData] = React.useState(null);
+  const [droneData, setDroneData] = React.useState([]);
+  const [violatorData, setViolaterData] = React.useState([]);
 
+  //get drones data every 2 minutes
   React.useEffect(() => {
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setData(data.message));
+    const interval = setInterval(() => {
+      axios.get('http://localhost:3001/drones')
+        .then(response => {
+          const resData = response.data.drone;
+          setDroneData([...resData]);
+        });
+    }, 2000);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
+
+  //whenever new drone is detected, check for violation
+  React.useEffect(() => {
+    if (droneData) {
+      droneData.map((drone) => {
+        const distance = Math.sqrt(Math.abs(drone.positionX - 250000) ** 2 + Math.abs(drone.positionY - 250000) ** 2);
+        //console.log(distance);
+        //min distance = 500000/500 * 100 = 100000
+        //console.log("Distance= ",distance);
+        if (distance < 100000) {
+          //console.log("distancee= ",distance,"serial= ",drone.serialNumber);
+          pilotInformation(drone.serialNumber, distance);
+        }
+      })
+    }
+  }, [droneData]);
+
+  //remove violator data  after 10 minutes (600000 milliseconds)
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setViolaterData(violatorData.filter(
+        (violator) => {
+          const timeNow = Date.now();
+          return timeNow - violator.violationTime < 600000
+        }
+      ))
+    }, 5000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [violatorData]);
+
+
+  const pilotInformation = (serialNumber, distance) => {
+    //console.log(serialNumber,distance);
+    axios.get(`http://localhost:3001/pilots/${serialNumber}`)
+      .then(response => {
+        const pilotData = response.data;
+        //console.log("got a pilot",pilotData.firstName);
+        const violator = {
+          firstName: pilotData.firstName,
+          lastName: pilotData.lastName,
+          email: pilotData.email,
+          phoneNumber: pilotData.phoneNumber,
+          closestDistance: distance,
+          violationTime: Date.now(),
+          violationTimes:1,
+        };
+
+        setViolaterData(violatorData.concat([violator]));
+        //console.log("violer2=",violatorData);
+
+      })
+      .catch(error => {
+        //console.log(error);
+        return error;
+      });
+    console.log("data = ", violatorData);
+
+  }
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{!data ? "Loading..." : data}</p>
+      <header className="Body">
+        <h1>Violators Information</h1>
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={2}>
+            {
+
+              violatorData.map((data, idx) => (
+                <Grid item xs={4}>
+                  <BasicCard
+                    key={idx}
+                    firstName={data.firstName}
+                    lastName={data.lastName}
+                    email={data.email}
+                    phoneNumber={data.phoneNumber}
+                    closestDistance={data.closestDistance}
+                    violationTime={data.violationTime}
+                    violationTimes = {data.violationTimes}
+                  />
+                </Grid>
+              ))
+            }
+          </Grid>
+        </Box>
       </header>
     </div>
   );
